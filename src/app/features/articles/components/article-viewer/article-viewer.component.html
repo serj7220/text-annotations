@@ -1,0 +1,60 @@
+<div class="viewer-container">
+  <header class="viewer-header">
+    <button class="btn-outline back-btn" routerLink="/">
+      ← К списку статей
+    </button>
+    <h1>{{ article?.title }}</h1>
+  </header>
+
+  <div class="article-content" #textContainer (mouseup)="onTextSelect()">
+    @for (segment of textSegments; track $index) {
+      @if (segment.isAnnotation) {
+        <span
+          class="annotated-text"
+          [style.textDecorationColor]="segment.color"
+          [appTooltip]="segment.noteText!"
+          >{{ segment.text }}</span
+        >
+      } @else {
+        <span>{{ segment.text }}</span>
+      }
+    }
+  </div>
+</div>
+
+@if (showPopup) {
+  <div
+    class="annotation-popup"
+    [style.top.px]="popupTop"
+    [style.left.px]="popupLeft"
+  >
+    <div class="popup-header">
+      <strong>Новая аннотация</strong>
+    </div>
+
+    <div class="popup-body">
+      <textarea
+        [(ngModel)]="noteText"
+        placeholder="Введите примечание..."
+        rows="3"
+        autoFocus
+      ></textarea>
+
+      <div class="color-picker-row">
+        <label for="colorPicker">Цвет:</label>
+        <input id="colorPicker" type="color" [(ngModel)]="selectedColor" />
+      </div>
+    </div>
+
+    <div class="popup-actions">
+      <button class="btn-outline btn-sm" (click)="closePopup()">Отмена</button>
+      <button
+        class="btn-success btn-sm"
+        (click)="saveAnnotation()"
+        [disabled]="!noteText.trim()"
+      >
+        Сохранить
+      </button>
+    </div>
+  </div>
+}

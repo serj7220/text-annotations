@@ -1,0 +1,59 @@
+<div class="list-container">
+  <header class="list-header">
+    <h1>Мои статьи</h1>
+    <button class="btn-primary" routerLink="/edit/new">Создать статью</button>
+  </header>
+
+  @if (articles$ | async; as articles) {
+    @if (articles.length === 0) {
+      <div class="empty-state">
+        <p>У вас пока нет сохраненных статей.</p>
+        <button class="btn-outline" routerLink="/edit/new">
+          Написать первую статью
+        </button>
+      </div>
+    } @else {
+      <div class="articles-grid">
+        @for (article of articles; track article.id) {
+          <div class="article-card">
+            <h2>{{ article.title }}</h2>
+            <p class="content-preview">
+              {{ article.content | slice: 0 : 100 }}...
+            </p>
+
+            <div class="card-actions">
+              <button class="btn-success" [routerLink]="['/view', article.id]">
+                Читать & Аннотировать
+              </button>
+              <button class="btn-outline" [routerLink]="['/edit', article.id]">
+                Изменить
+              </button>
+              <button class="btn-danger" (click)="openDeleteModal(article.id)">
+                Удалить
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+@if (isModalOpen) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>Удаление статьи</h2>
+      <p>
+        Вы уверены, что хотите удалить эту статью? Это действие нельзя будет
+        отменить.
+      </p>
+
+      <div class="modal-actions">
+        <button class="btn-outline" (click)="closeModal()">Отмена</button>
+        <button class="btn-danger" (click)="confirmDelete()">
+          Да, удалить
+        </button>
+      </div>
+    </div>
+  </div>
+}
